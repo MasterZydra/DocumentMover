@@ -1,20 +1,26 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from array import array
 import configparser
 import re
 
 class ConfigValidator(object):
   def __init__(self) -> None:
     self.__configParser = None
+    self.__errors = []
 
   def validate(self, configParser: configparser.ConfigParser) -> bool:
     self.__configParser = configParser
+    self.__errors = []
     result = True
     result &= self.__validateSources()
     result &= self.__validateDestinations()
     self.__configParser = None
     return result
+
+  def getErrors(self) -> array:
+    return self.__errors
 
   def __validateSources(self) -> bool:
     atLeastOneSource = False
@@ -29,7 +35,7 @@ class ConfigValidator(object):
 
       # Check if every source has a path
       if not 'path' in self.__configParser[section]:
-        print("Error in source '%s': Every source must contain a 'Path'"%(section))
+        self.__errors.append("Error in source '%s': Every source must contain a 'Path'"%(section))
         sectionsValid = False
 
     return atLeastOneSource & sectionsValid
@@ -47,7 +53,7 @@ class ConfigValidator(object):
 
       # Check if every destination has a path
       if not 'path' in self.__configParser[section]:
-        print("Error in destination '%s': Every destination must contain a 'Path'"%(section))
+        self.__errors.append("Error in destination '%s': Every destination must contain a 'Path'"%(section))
         sectionsValid = False
 
     return atLeastOneSource & sectionsValid
