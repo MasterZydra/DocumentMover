@@ -15,9 +15,10 @@ class Destination(object):
     self.path = path.strip()
 
 class Rule(object):
-  def __init__(self, name: str, selector: str) -> None:
+  def __init__(self, name: str, selector: str, destination: str) -> None:
     self.name = name
     self.selector = selector
+    self.destination = destination
 
 class Config(object):
   def __init__(self) -> None:

@@ -46,7 +46,9 @@ class ConfigReader(object):
       if not self.__match(section, 'rule\.'):
         continue
 
-      rule = Rule(section, self.__configParser[section]['selector'])
+      selector = self.__configParser[section]['selector']
+      destination = 'Destination.' + self.__configParser[section]['destination']
+      rule = Rule(section, selector, destination)
       self.__config.addRule(rule)
 
   def __match(self, section: str, pattern: str) -> bool:

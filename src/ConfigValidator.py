@@ -91,6 +91,11 @@ class ConfigValidator(object):
         self.__errors.append("Error in rule '%s': Every rule must contain a 'Selector'"%(section))
         sectionsValid = False
 
+      # Check if every rule has a selector
+      if not 'destination' in self.__configParser[section]:
+        self.__errors.append("Error in rule '%s': Every rule must contain a 'Destination'"%(section))
+        sectionsValid = False
+
       if not atLeastOne:
         self.__errors.append("Error: It must exist at least one rule")
         sectionsValid = False
