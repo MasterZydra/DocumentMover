@@ -57,7 +57,11 @@ class ConfigReader(object):
 
       selector = self.__configParser[section]['selector']
       destination = 'Destination.' + self.__configParser[section]['destination']
-      rule = Rule(section, selector, destination)
+      subfolder = ''
+      if 'subfolder' in self.__configParser[section]:
+        subfolder = self.__configParser[section]['subfolder']
+
+      rule = Rule(section, selector, destination, subfolder)
       self.__config.addRule(rule)
 
   def __match(self, section: str, pattern: str) -> bool:

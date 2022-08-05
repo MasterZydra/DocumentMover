@@ -30,4 +30,5 @@ Path=/my/path/to/dest
 [Rule.rule_name]
 Selector=file_starts_with # Regex
 Destination=dest_name # Must match with a existing destination
+Subfolder=subfolder/in/destination/folder # Optional - Default value is ''
 ```

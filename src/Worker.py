@@ -8,6 +8,7 @@ import shutil
 import re
 from os import listdir
 from os.path import isfile, join, isdir
+from pathlib import Path
 
 class Worker(object):
   def __init__(self, config: Config) -> None:
@@ -35,6 +36,15 @@ class Worker(object):
   def __processRule(self, rule: Rule, file: array):
     if not re.match(rule.selector, file[0], re.IGNORECASE):
       return
+
     destination: Destination = self.__config.getDestination(rule.destination)
-    print("Move file %s to %s"%(join(file[1], file[0]), destination.path))
-    shutil.move(join(file[1], file[0]), join(destination.path, file[0]))
+
+    filePath = join(file[1], file[0])
+    destDir = join(destination.path, rule.subfolder)
+    destPath = join(destDir, file[0])
+
+    # Create path if necessary
+    Path(destDir).mkdir(parents=True, exist_ok=True)
+
+    shutil.move(filePath, destPath)
+    print("Move file %s to %s"%(filePath, destination.path))
