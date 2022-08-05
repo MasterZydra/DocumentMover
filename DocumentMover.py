@@ -1,19 +1,33 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from calendar import c
 from src.ConfigValidator import ConfigValidator
 from src.ConfigReader import ConfigReader
 from src.Worker import Worker
 
+import argparse
+import os
+from os.path import join
 import sys
 from configparser import ConfigParser
 
 def main() -> int:
+    parser = argparse.ArgumentParser(description='Move files according to the rules given in the config file')
+    parser.add_argument('-p', dest='path', type=str, help='path to the folder with config file', default='.')
+    args = parser.parse_args()
+
+    if not os.path.isdir(args.path):
+        print('Error: "' + args.path + '" is not a valid path')
+        return -1
+
     print('Document Mover')
 
     configParser = ConfigParser()
-    configParser.read('./.documentMover')
+    if not os.path.isfile(join(args.path, '.documentMover')):
+      print('Error: No configuration file ".documentMover" found in the given path')
+      return -1
+
+    configParser.read(join(args.path, '.documentMover'))
 
     if not validate(configParser):
       return -1
