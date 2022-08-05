@@ -27,13 +27,16 @@ class Config(object):
     self.rules = {}
 
   def addSource(self, source: Source) -> None:
-    self.sources[source.name] = source
+    self.sources[source.name.lower()] = source
 
   def addDestination(self, destination: Destination) -> None:
-    self.destinations[destination.name] = destination
-  
+    self.destinations[destination.name.lower()] = destination
+
+  def getDestination(self, name: str) -> Destination:
+    return self.destinations.get(name.lower())
+
   def addRule(self, rule: Rule) -> None:
-    self.rules[rule.name] = rule
+    self.rules[rule.name.lower()] = rule
 
   def toJSON(self) -> str:
       return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True, indent=4)

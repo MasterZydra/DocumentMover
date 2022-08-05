@@ -1,8 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from src.Config import Config
+from array import array
+from src.Config import Config, Destination, Rule
 
+import shutil
+import re
 from os import listdir
 from os.path import isfile, join
 
@@ -13,14 +16,22 @@ class Worker(object):
   def run(self) -> None:
     print('Worker run')
     for _, source in self.__config.sources.items():
-      print('->', source.path)
-      self.getFilesInDir(source.path)
-    # source = self.__config.sources[self.__config.sources.keys()[0]]
-    # print(source.path)
+      for file in self.__getFilesInDir(source.path):
+        for _, rule in self.__config.rules.items():
+          self.__processRule(rule, file)
 
-  def getFilesInDir(self, dir: str) -> None:
+  def __getFilesInDir(self, dir: str) -> array:
     # TODO catch FileNotFoundError
+    files = []
     for file in listdir(dir):
       if not isfile(join(dir, file)):
         continue
-      print(file)
+      files.append([file, dir])
+    return files
+
+  def __processRule(self, rule: Rule, file: array):
+    if not re.match(rule.selector, file[0], re.IGNORECASE):
+      return
+    destination: Destination = self.__config.getDestination(rule.destination)
+    print(destination)
+    shutil.move(join(file[1], file[0]), join(destination.path, file[0]))
