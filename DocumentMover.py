@@ -12,7 +12,7 @@ import sys
 from configparser import ConfigParser
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description='Move files according to the rules given in the config file')
+    parser = argparse.ArgumentParser(description='DocumentMover is a command line tool that automatically moves files in directories. Rules determine where the files get moved.')
     parser.add_argument('-p', dest='path', type=str, help='path to the folder with config file', default='.')
     args = parser.parse_args()
 
