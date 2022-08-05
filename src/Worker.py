@@ -33,5 +33,5 @@ class Worker(object):
     if not re.match(rule.selector, file[0], re.IGNORECASE):
       return
     destination: Destination = self.__config.getDestination(rule.destination)
-    print(destination)
+    print("Move file %s to %s"%(join(file[1], file[0]), destination.path))
     shutil.move(join(file[1], file[0]), join(destination.path, file[0]))
