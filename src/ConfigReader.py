@@ -21,8 +21,15 @@ class ConfigReader(object):
     for section in self.__configParser.sections():
       if not self.__sectionExists(section, 'source.'):
         continue
-      
-      source = Source(section, self.__configParser[section]['path'])
+
+      path = self.__configParser[section]['path']
+
+      recursively = False
+      if 'recursively' in self.__configParser[section]:
+        recursivelyStr = self.__configParser[section]['recursively'].lower()
+        recursively = recursivelyStr == 'yes'
+
+      source = Source(section, path, recursively)
       self.__config.addSource(source)
 
   def __readDestinations(self) -> None:

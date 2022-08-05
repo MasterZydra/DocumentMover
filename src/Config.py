@@ -4,9 +4,10 @@
 import json
 
 class Source(object):
-  def __init__(self, name: str, path: str) -> None:
+  def __init__(self, name: str, path: str, recursively: bool = False) -> None:
     self.name = name
-    self.path = path.strip()
+    self.path = path
+    self.recursively = recursively
 
 class Destination(object):
   def __init__(self, name: str, path: str) -> None:
