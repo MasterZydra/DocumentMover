@@ -5,18 +5,24 @@ from array import array
 import configparser
 import re
 
+from src.ConfigReader import ConfigReader
+
 class ConfigValidator(object):
   def __init__(self) -> None:
     self.__configParser = None
+    self.__config = None
     self.__errors = []
 
   def validate(self, configParser: configparser.ConfigParser) -> bool:
     self.__configParser = configParser
+    self.__config = None
     self.__errors = []
 
     result = True
     result &= self.__validateSources()
     result &= self.__validateDestinations()
+    # Read the destinations so that in the rules the existence of the destinations can be checked
+    self.__config = ConfigReader().readDestinations(self.__configParser)
     result &= self.__validateRules()
 
     self.__configParser = None
@@ -95,6 +101,12 @@ class ConfigValidator(object):
       if not 'destination' in self.__configParser[section]:
         self.__errors.append("Error in rule '%s': Every rule must contain a 'Destination'"%(section))
         sectionsValid = False
+      # Check if the destination exists
+      else:
+        destination = 'Destination.' + self.__configParser[section]['destination']
+        if self.__config.getDestination(destination) is None:
+          self.__errors.append("Error in rule '%s': The destination '%s' does not exist"%(section, destination))
+          sectionsValid = False
 
     if not atLeastOne:
       self.__errors.append("Error: It must exist at least one rule")
