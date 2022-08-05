@@ -11,9 +11,18 @@ class ConfigReader(object):
     self.__config = Config()
     self.__configParser = configParser
     
-    self.__readSources()
     self.__readDestinations()
+    self.__readSources()
     self.__readRules()
+
+    self.__configParser = None
+    return self.__config
+
+  def readDestinations(self, configParser: configparser.ConfigParser) -> Config:
+    self.__config = Config()
+    self.__configParser = configParser
+    
+    self.__readDestinations()
 
     self.__configParser = None
     return self.__config
