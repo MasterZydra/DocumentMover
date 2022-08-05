@@ -2,29 +2,32 @@
 # -*- coding: utf-8 -*-
 
 from array import array
-from src.Config import Config, Destination, Rule
+from src.Config import Config, Destination, Rule, Source
 
 import shutil
 import re
 from os import listdir
-from os.path import isfile, join
+from os.path import isfile, join, isdir
 
 class Worker(object):
   def __init__(self, config: Config) -> None:
     self.__config = config
   
   def run(self) -> None:
-    print('Worker run')
     for _, source in self.__config.sources.items():
-      for file in self.__getFilesInDir(source.path):
+      for file in self.__getFilesInDir(source, source.path):
         for _, rule in self.__config.rules.items():
           self.__processRule(rule, file)
 
-  def __getFilesInDir(self, dir: str) -> array:
+  def __getFilesInDir(self, source: Source, dir: str) -> array:
     # TODO catch FileNotFoundError
     files = []
     for file in listdir(dir):
-      if not isfile(join(dir, file)):
+      path = join(dir, file)
+      if source.recursively and isdir(path):
+        files += self.__getFilesInDir(source, path)
+        continue
+      if not isfile(path):
         continue
       files.append([file, dir])
     return files

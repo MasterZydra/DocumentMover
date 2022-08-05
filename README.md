@@ -22,7 +22,7 @@ The configuration is done in `.documentMover` files.
 ```TOML
 [Source.source_name]
 Path=/my/path/to/src
-Recursively='yes' # Optional - Default value is 'no'
+Recursively=yes # Optional - Default value is 'no'
 
 [Destination.dest_name]
 Path=/my/path/to/dest
