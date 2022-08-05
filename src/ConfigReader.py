@@ -11,6 +11,7 @@ class ConfigReader(object):
     self.__config = Config()
     self.__configParser = configParser
     
+    self.__readCommon()
     self.__readDestinations()
     self.__readSources()
     self.__readRules()
@@ -26,6 +27,15 @@ class ConfigReader(object):
 
     self.__configParser = None
     return self.__config
+
+  def __readCommon(self) -> None:
+    for section in self.__configParser.sections():
+      if not self.__match(section, '^common$'):
+        continue
+
+      if 'createFolders' in self.__configParser[section]:
+        createFoldersStr = self.__configParser[section]['createFolders'].lower()
+        self.__config.createFolders = createFoldersStr == 'yes'
 
   def __readSources(self) -> None:
     for section in self.__configParser.sections():

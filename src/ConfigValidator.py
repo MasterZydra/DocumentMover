@@ -19,6 +19,7 @@ class ConfigValidator(object):
     self.__errors = []
 
     result = True
+    result &= self.__valdiateCommon()
     result &= self.__validateSources()
     result &= self.__validateDestinations()
     # Read the destinations so that in the rules the existence of the destinations can be checked
@@ -30,6 +31,20 @@ class ConfigValidator(object):
 
   def getErrors(self) -> array:
     return self.__errors
+
+  def __valdiateCommon(self) -> bool:
+    sectionValid = True
+    for section in self.__configParser.sections():
+      if not self.__match(section, '^common$'):
+        continue
+
+      if 'createfolders' in self.__configParser[section]:
+        recursively = self.__configParser[section]['createfolders'].lower()
+        if recursively not in ['yes', 'no']:
+          self.__errors.append("Error in '%s': 'CreateFolder' must be 'yes' or 'no'"%(section))
+          sectionValid = False
+
+    return sectionValid
 
   def __validateSources(self) -> bool:
     atLeastOne = False

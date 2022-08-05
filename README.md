@@ -20,6 +20,9 @@ The configuration is done in `.documentMover` files.
 
 **Example file `.documentMover`**
 ```TOML
+[Common]
+createFolders=no # Optional - Default value is 'yes'
+
 [Source.source_name]
 Path=/my/path/to/src
 Recursively=yes # Optional - Default value is 'no'

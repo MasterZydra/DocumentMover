@@ -43,8 +43,13 @@ class Worker(object):
     destDir = join(destination.path, rule.subfolder)
     destPath = join(destDir, file[0])
 
-    # Create path if necessary
-    Path(destDir).mkdir(parents=True, exist_ok=True)
+    if self.__config.createFolders:
+      # Create path if necessary
+      Path(destDir).mkdir(parents=True, exist_ok=True)
+    else:
+      if not isdir(destDir):
+        print("Error: The directory '%s' does not exist. Skipping file '%s'."%(destDir, filePath))
+        return
 
     shutil.move(filePath, destPath)
     print("Move file %s to %s"%(filePath, destDir))
