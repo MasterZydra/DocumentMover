@@ -44,6 +44,9 @@ class ConfigValidator(object):
           self.__errors.append("Error in source '%s': 'Recursively' must be 'yes' or 'no'"%(section))
           sectionsValid = False
 
+    if not atLeastOneSource:
+      self.__errors.append("Error: It must exist at least one source")
+
     return atLeastOneSource & sectionsValid
 
   def __validateDestinations(self) -> bool:
@@ -61,6 +64,9 @@ class ConfigValidator(object):
       if not 'path' in self.__configParser[section]:
         self.__errors.append("Error in destination '%s': Every destination must contain a 'Path'"%(section))
         sectionsValid = False
+
+    if not atLeastOneSource:
+      self.__errors.append("Error: It must exist at least one destination")
 
     return atLeastOneSource & sectionsValid
 
