@@ -47,4 +47,4 @@ class Worker(object):
     Path(destDir).mkdir(parents=True, exist_ok=True)
 
     shutil.move(filePath, destPath)
-    print("Move file %s to %s"%(filePath, destination.path))
+    print("Move file %s to %s"%(filePath, destDir))
