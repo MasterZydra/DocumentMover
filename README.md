@@ -36,4 +36,5 @@ Path=/my/path/to/dest
 Selector=file_starts_with # Regex
 Destination=dest_name # Must match with a existing destination
 Subfolder=subfolder/in/destination/folder # Optional - Default value is ''
+Operation=delete # Optional - Default value is 'move'. Other options: 'copy', 'delete'
 ```
