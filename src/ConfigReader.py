@@ -5,6 +5,7 @@ import configparser
 import re
 
 from src.Config import Config, Rule, Source, Destination
+from src.Operation import OperationType
 
 class ConfigReader(object):
   def read(self, configParser: configparser.ConfigParser) -> Config:
@@ -67,11 +68,16 @@ class ConfigReader(object):
 
       selector = self.__configParser[section]['selector']
       destination = 'Destination.' + self.__configParser[section]['destination']
+      # Subfolder
       subfolder = ''
       if 'subfolder' in self.__configParser[section]:
         subfolder = self.__configParser[section]['subfolder']
+      # Operation
+      operation = OperationType.MOVE
+      if 'operation' in self.__configParser[section]:
+          operation = OperationType.fromStr(self.__configParser[section]['operation'])
 
-      rule = Rule(section, selector, destination, subfolder)
+      rule = Rule(section, selector, destination, subfolder, operation)
       self.__config.addRule(rule)
 
   def __match(self, section: str, pattern: str) -> bool:

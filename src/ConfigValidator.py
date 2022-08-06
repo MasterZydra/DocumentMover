@@ -6,6 +6,7 @@ import configparser
 import re
 
 from src.ConfigReader import ConfigReader
+from src.Operation import OperationType
 
 class ConfigValidator(object):
   def __init__(self, showWarnings: bool = False) -> None:
@@ -134,6 +135,14 @@ class ConfigValidator(object):
           sectionsValid = False
         elif self.__showWarnings and destination.lower() in self.__unusedDestinations:
           self.__unusedDestinations.remove(destination.lower())
+
+      # Check if the operation is a valid value
+      if 'operation' in self.__configParser[section]:
+        try:
+          OperationType.fromStr(self.__configParser[section]['operation'])
+        except KeyError:
+          self.__errors.append("Error in destination '%s': 'Operation' must be %s"%(section, OperationType.toStringList()))
+          sectionsValid = False
 
     if not atLeastOne:
       self.__errors.append("Error: It must exist at least one rule")

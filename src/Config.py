@@ -3,6 +3,8 @@
 
 import json
 
+from src.Operation import OperationType
+
 class Source(object):
   def __init__(self, name: str, path: str, recursively: bool = False) -> None:
     self.name = name
@@ -15,11 +17,12 @@ class Destination(object):
     self.path = path.strip()
 
 class Rule(object):
-  def __init__(self, name: str, selector: str, destination: str, subfolder: str = '') -> None:
+  def __init__(self, name: str, selector: str, destination: str, subfolder: str = '', operation: OperationType = OperationType.MOVE) -> None:
     self.name = name
     self.selector = selector
     self.destination = destination
     self.subfolder = subfolder
+    self.operation = operation
 
 class Config(object):
   def __init__(self) -> None:
