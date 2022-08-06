@@ -2,11 +2,12 @@
 # -*- coding: utf-8 -*-
 
 from array import array
+from src.Operation import OperationType
 from src.Config import Config, Destination, Rule, Source
 
 import shutil
 import re
-from os import listdir
+import os
 from os.path import isfile, join, isdir
 from pathlib import Path
 
@@ -23,7 +24,7 @@ class Worker(object):
   def __getFilesInDir(self, source: Source, dir: str) -> array:
     # TODO catch FileNotFoundError
     files = []
-    for file in listdir(dir):
+    for file in os.listdir(dir):
       path = join(dir, file)
       if source.recursively and isdir(path):
         files += self.__getFilesInDir(source, path)
@@ -33,7 +34,7 @@ class Worker(object):
       files.append([file, dir])
     return files
 
-  def __processRule(self, rule: Rule, file: array):
+  def __processRule(self, rule: Rule, file: array) -> None:
     if not re.match(rule.selector, file[0], re.IGNORECASE):
       return
 
@@ -43,13 +44,30 @@ class Worker(object):
     destDir = join(destination.path, rule.subfolder)
     destPath = join(destDir, file[0])
 
-    if self.__config.createFolders:
-      # Create path if necessary
-      Path(destDir).mkdir(parents=True, exist_ok=True)
-    else:
-      if not isdir(destDir):
-        print("Error: The directory '%s' does not exist. Skipping file '%s'."%(destDir, filePath))
+    self.__executeOperation(rule, filePath, destPath, destDir)
+
+  def __executeOperation(self, rule: Rule, filePath: str, destPath: str, destDir: str) -> None:
+    if rule.operation == OperationType.MOVE or rule.operation == OperationType.COPY:
+        if self.__config.createFolders:
+          # Create path if necessary
+          Path(destDir).mkdir(parents=True, exist_ok=True)
+        else:
+          if not isdir(destDir):
+            print("Error: The directory '%s' does not exist. Skipping file '%s'."%(destDir, filePath))
+            return
+
+    match rule.operation:
+      case OperationType.MOVE:
+        shutil.move(filePath, destPath)
+        print("Moved file %s to %s"%(filePath, destDir))
         return
 
-    shutil.move(filePath, destPath)
-    print("Move file %s to %s"%(filePath, destDir))
+      case OperationType.DELETE:
+        os.remove(filePath)
+        print("Deleted file %s"%(filePath))
+        return 
+
+      case OperationType.COPY:
+        shutil.copy(filePath, destPath)
+        print("Copied file %s to %s"%(filePath, destDir))
+        return
