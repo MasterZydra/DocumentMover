@@ -8,10 +8,12 @@ import re
 from src.ConfigReader import ConfigReader
 
 class ConfigValidator(object):
-  def __init__(self) -> None:
+  def __init__(self, showWarnings: bool = False) -> None:
     self.__configParser = None
     self.__config = None
     self.__errors = []
+    self.__unusedDestinations = []
+    self.__showWarnings = showWarnings
 
   def validate(self, configParser: configparser.ConfigParser) -> bool:
     self.__configParser = configParser
@@ -24,7 +26,15 @@ class ConfigValidator(object):
     result &= self.__validateDestinations()
     # Read the destinations so that in the rules the existence of the destinations can be checked
     self.__config = ConfigReader().readDestinations(self.__configParser)
+    if self.__showWarnings:
+      # The list is filled with all destinations and they will be removed (if used) in __validateRules()
+      self.__unusedDestinations = list(self.__config.destinations.keys())
     result &= self.__validateRules()
+
+    if self.__showWarnings:
+      if len(self.__unusedDestinations) > 0:
+        for destination in self.__unusedDestinations:
+          self.__errors.append("Warning: The destination '%s' is never used"%(destination))
 
     self.__configParser = None
     return result
@@ -122,6 +132,8 @@ class ConfigValidator(object):
         if self.__config.getDestination(destination) is None:
           self.__errors.append("Error in rule '%s': The destination '%s' does not exist"%(section, destination))
           sectionsValid = False
+        elif self.__showWarnings and destination.lower() in self.__unusedDestinations:
+          self.__unusedDestinations.remove(destination.lower())
 
     if not atLeastOne:
       self.__errors.append("Error: It must exist at least one rule")
