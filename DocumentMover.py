@@ -33,7 +33,11 @@ def main() -> int:
       print('Error: No configuration file ".documentMover" found in the given path')
       return -1
 
+    try:
     configParser.read(join(args.path, '.documentMover'))
+    except DuplicateSectionError as e:
+      print('Error:', e.message)
+      return -1
 
     if not validate(configParser):
       return -1
