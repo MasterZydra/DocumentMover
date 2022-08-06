@@ -34,14 +34,17 @@ def main() -> int:
       return -1
 
     try:
-    configParser.read(join(args.path, '.documentMover'))
+      configParser.read(join(args.path, '.documentMover'))
     except DuplicateSectionError as e:
       print('Error:', e.message)
       return -1
 
-    if not validate(configParser):
+    if not validate(configParser, args.validate):
       return -1
-
+    
+    if args.validate:
+      return 0
+    
     configReader = ConfigReader()
     config = configReader.read(configParser)
 
@@ -50,9 +53,13 @@ def main() -> int:
 
     return 0
 
-def validate(configParser: ConfigParser) -> bool:
-    configValidator = ConfigValidator()
+def validate(configParser: ConfigParser, validateOnly: bool) -> bool:
+    configValidator = ConfigValidator(validateOnly)
     isValid = configValidator.validate(configParser)
+
+    if validateOnly and isValid and len(configValidator.getErrors()) > 0:
+      for error in configValidator.getErrors():
+        print(error)
 
     if isValid:
       return True
