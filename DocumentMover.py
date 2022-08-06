@@ -9,18 +9,24 @@ import argparse
 import os
 from os.path import join
 import sys
-from configparser import ConfigParser
+from configparser import ConfigParser, DuplicateSectionError
+
+VERSION='v0.1.0'
 
 def main() -> int:
     parser = argparse.ArgumentParser(description='DocumentMover is a command line tool that automatically moves files in directories. Rules determine where the files get moved.')
+    parser.add_argument('-val', dest='validate', help='only validate the config file without executing it', action='store_true')
+    parser.add_argument('--version', dest='version', help='show the version of the program', action='store_true')
     parser.add_argument('-p', dest='path', type=str, help='path to the folder with config file', default='.')
     args = parser.parse_args()
+
+    if args.version:
+      showVersion()
+      return 0
 
     if not os.path.isdir(args.path):
         print('Error: "' + args.path + '" is not a valid path')
         return -1
-
-    print('Document Mover')
 
     configParser = ConfigParser()
     if not os.path.isfile(join(args.path, '.documentMover')):
@@ -52,6 +58,8 @@ def validate(configParser: ConfigParser) -> bool:
       print(error)
     return False
 
+def showVersion() -> None:
+  print('DocumentMover version', VERSION)
 
 if __name__ == '__main__':
     sys.exit(main())
