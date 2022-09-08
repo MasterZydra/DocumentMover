@@ -21,7 +21,7 @@ Options:
 The configuration is done in `.documentMover` files.
 
 **Example file `.documentMover`**
-```TOML
+```EditorConfig
 [Common]
 createFolders=no # Optional - Default value is 'yes'
 
