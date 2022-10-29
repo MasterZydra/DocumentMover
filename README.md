@@ -1,7 +1,7 @@
 # Document Mover
 DocumentMover is a command line tool that automatically moves files in directories. Rules determine where the files get moved.
 
-This command line tool is supposed to replace the [DocumentDropper](https://github.com/MasterZydra/DocumentDropper). The DocumentDropper is a tool written in Delphi and can not run on Linux. So this tool is written in Python3 with the advantage that Python is available on every mayor OS.
+This command line tool is supposed to replace the [DocumentDropper](https://github.com/MasterZydra/DocumentDropper). The DocumentDropper is a tool written in Delphi and can not run on Linux. So this tool is written in Python3 with the advantage that Python is available on every major OS.
 
 ## Usage
 `DocumentMover.py [-h] [-val] [--version] [-p PATH]`
@@ -21,7 +21,7 @@ Options:
 The configuration is done in `.documentMover` files.
 
 **Example file `.documentMover`**
-```TOML
+```EditorConfig
 [Common]
 createFolders=no # Optional - Default value is 'yes'
 
