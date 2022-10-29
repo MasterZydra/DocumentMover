@@ -62,6 +62,8 @@ def validate(configParser: ConfigParser, validateOnly: bool) -> bool:
         print(error)
 
     if isValid:
+      if validateOnly:
+        print('The config is valid!')
       return True
 
     print('The config is invalid!')
