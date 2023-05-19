@@ -59,7 +59,7 @@ class Worker(object):
     match rule.operation:
       case OperationType.MOVE:
         shutil.move(filePath, destPath)
-        print("Moved file %s to %s"%(filePath, destDir))
+        print("Moved file\n   %s\nto %s"%(filePath, destDir))
         return
 
       case OperationType.DELETE:
@@ -69,5 +69,5 @@ class Worker(object):
 
       case OperationType.COPY:
         shutil.copy(filePath, destPath)
-        print("Copied file %s to %s"%(filePath, destDir))
+        print("Copied file\n   %s\nto %s"%(filePath, destDir))
         return
