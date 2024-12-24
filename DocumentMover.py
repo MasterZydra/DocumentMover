@@ -11,7 +11,7 @@ from os.path import join
 import sys
 from configparser import ConfigParser, DuplicateSectionError
 
-VERSION='v0.2.0'
+VERSION='v0.3.0'
 
 def main() -> int:
     parser = argparse.ArgumentParser(description='DocumentMover is a command line tool that automatically moves files in directories. Rules determine where the files get moved.')

@@ -37,4 +37,21 @@ Selector=file_starts_with # Regex
 Destination=dest_name # Must match with a existing destination
 Subfolder=subfolder/in/destination/folder # Optional - Default value is ''
 Operation=delete # Optional - Default value is 'move'. Other options: 'copy', 'delete'
+
+# This is a comment - it can be used to structure longer files
+```
+
+## Subfolder variables
+
+Current day of month (1-31) with placeholder `{day}`: e.g. `24`  
+Current month (1-12) with placeholder `{month}`: e.g. `12`  
+Current year (1-9999) with placeholder `{year}`: e.g. `2024`
+
+**Example file `.documentMover`**
+```EditorConfig
+# ...
+
+[Rule.rule_name]
+Subfolder={year}/{month}/{day}
+# ...
 ```

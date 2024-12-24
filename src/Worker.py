@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from array import array
+from datetime import datetime
 from src.Operation import OperationType
 from src.Config import Config, Destination, Rule, Source
 
@@ -41,7 +42,8 @@ class Worker(object):
     destination: Destination = self.__config.getDestination(rule.destination)
 
     filePath = join(file[1], file[0])
-    destDir = join(destination.path, rule.subfolder)
+    subfolder = self.__replaceVariables(rule.subfolder)
+    destDir = join(destination.path, subfolder)
     destPath = join(destDir, file[0])
 
     self.__executeOperation(rule, filePath, destPath, destDir)
@@ -71,3 +73,12 @@ class Worker(object):
         shutil.copy(filePath, destPath)
         print("Copied file\n   %s\nto %s"%(filePath, destDir))
         return
+
+  def __replaceVariables(self, path: str) -> str:
+    if "{day}" in path:
+      path = path.replace("{day}", str(datetime.now().day))
+    if "{month}" in path:
+      path = path.replace("{month}", str(datetime.now().month))
+    if "{year}" in path:
+      path = path.replace("{year}", str(datetime.now().year))
+    return path
