@@ -27,6 +27,7 @@ class Rule(object):
 class Config(object):
   def __init__(self) -> None:
     self.createFolders = True
+    self.defaultDestination = None
     self.sources = {}
     self.destinations = {}
     self.rules = {}

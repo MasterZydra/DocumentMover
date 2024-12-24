@@ -23,7 +23,8 @@ The configuration is done in `.documentMover` files.
 **Example file `.documentMover`**
 ```EditorConfig
 [Common]
-createFolders=no # Optional - Default value is 'yes'
+CreateFolders=no # Optional - Default value is 'yes'
+DefaultDestination=dest_name # Optional - Fallback if a rule has no destination
 
 [Source.source_name]
 Path=/my/path/to/src
@@ -34,7 +35,7 @@ Path=/my/path/to/dest
 
 [Rule.rule_name]
 Selector=file_starts_with # Regex
-Destination=dest_name # Must match with a existing destination
+Destination=dest_name # Must match with a existing destination - Is optional if DefaultDestination is set
 Subfolder=subfolder/in/destination/folder # Optional - Default value is ''
 Operation=delete # Optional - Default value is 'move'. Other options: 'copy', 'delete'
 

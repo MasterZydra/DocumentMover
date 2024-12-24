@@ -23,7 +23,8 @@ class ConfigReader(object):
   def readDestinations(self, configParser: configparser.ConfigParser) -> Config:
     self.__config = Config()
     self.__configParser = configParser
-    
+
+    self.__readCommon()
     self.__readDestinations()
 
     self.__configParser = None
@@ -37,6 +38,9 @@ class ConfigReader(object):
       if 'createFolders' in self.__configParser[section]:
         createFoldersStr = self.__configParser[section]['createFolders'].lower()
         self.__config.createFolders = createFoldersStr == 'yes'
+
+      if 'defaultDestination' in self.__configParser[section]:
+        self.__config.defaultDestination = 'Destination.' + self.__configParser[section]['defaultDestination']
 
   def __readSources(self) -> None:
     for section in self.__configParser.sections():
@@ -67,7 +71,11 @@ class ConfigReader(object):
         continue
 
       selector = self.__configParser[section]['selector']
-      destination = 'Destination.' + self.__configParser[section]['destination']
+
+      # Destination
+      destination = self.__config.defaultDestination
+      if 'destination' in self.__configParser[section]:
+        destination = 'Destination.' + self.__configParser[section]['destination']
       # Subfolder
       subfolder = ''
       if 'subfolder' in self.__configParser[section]:

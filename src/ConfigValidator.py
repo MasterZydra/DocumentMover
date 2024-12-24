@@ -25,11 +25,14 @@ class ConfigValidator(object):
     result &= self.__valdiateCommon()
     result &= self.__validateSources()
     result &= self.__validateDestinations()
+
     # Read the destinations so that in the rules the existence of the destinations can be checked
     self.__config = ConfigReader().readDestinations(self.__configParser)
     if self.__showWarnings:
       # The list is filled with all destinations and they will be removed (if used) in __validateRules()
       self.__unusedDestinations = list(self.__config.destinations.keys())
+
+    result &= self.__valdiateCommonDefaultDestionation()
     result &= self.__validateRules()
 
     if self.__showWarnings:
@@ -49,11 +52,28 @@ class ConfigValidator(object):
       if not self.__match(section, '^common$'):
         continue
 
-      if 'createfolders' in self.__configParser[section]:
-        recursively = self.__configParser[section]['createfolders'].lower()
+      if 'createFolders' in self.__configParser[section]:
+        recursively = self.__configParser[section]['createFolders'].lower()
         if recursively not in ['yes', 'no']:
           self.__errors.append("Error in '%s': 'CreateFolder' must be 'yes' or 'no'"%(section))
           sectionValid = False
+
+    return sectionValid
+
+  def __valdiateCommonDefaultDestionation(self) -> bool:
+    sectionValid = True
+    for section in self.__configParser.sections():
+      if not self.__match(section, '^common$'):
+        continue
+
+      # Check if the destination exists
+      if 'defaultDestination' in self.__configParser[section]:
+        destination = 'Destination.' + self.__configParser[section]['defaultDestination']
+        if self.__config.getDestination(destination) is None:
+          self.__errors.append("Error in rule '%s': The destination '%s' does not exist"%(section, destination))
+          sectionValid = False
+        elif self.__showWarnings and destination.lower() in self.__unusedDestinations:
+          self.__unusedDestinations.remove(destination.lower())
 
     return sectionValid
 
@@ -124,17 +144,18 @@ class ConfigValidator(object):
         sectionsValid = False
 
       # Check if every rule has a destination
-      if not 'destination' in self.__configParser[section]:
-        self.__errors.append("Error in rule '%s': Every rule must contain a 'Destination'"%(section))
-        sectionsValid = False
-      # Check if the destination exists
-      else:
+      if 'destination' in self.__configParser[section]:
+        # Check if the destination exists
         destination = 'Destination.' + self.__configParser[section]['destination']
         if self.__config.getDestination(destination) is None:
           self.__errors.append("Error in rule '%s': The destination '%s' does not exist"%(section, destination))
           sectionsValid = False
         elif self.__showWarnings and destination.lower() in self.__unusedDestinations:
           self.__unusedDestinations.remove(destination.lower())
+      else:
+        if self.__config.defaultDestination is None:
+          self.__errors.append("Error in rule '%s': Every rule must contain a 'Destination'"%(section))
+          sectionsValid = False
 
       # Check if the operation is a valid value
       if 'operation' in self.__configParser[section]:
