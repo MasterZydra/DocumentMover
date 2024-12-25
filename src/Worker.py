@@ -39,10 +39,12 @@ class Worker(object):
     if not re.match(rule.selector, file[0], re.IGNORECASE):
       return
 
+    groups = re.search(rule.selector, file[0]).groups()
+
     destination: Destination = self.__config.getDestination(rule.destination)
 
     filePath = join(file[1], file[0])
-    subfolder = self.__replaceVariables(rule.subfolder)
+    subfolder = self.__replaceVariables(rule.subfolder, groups)
     destDir = join(destination.path, subfolder)
     destPath = join(destDir, file[0])
 
@@ -74,11 +76,20 @@ class Worker(object):
         print("Copied file\n   %s\nto %s"%(filePath, destDir))
         return
 
-  def __replaceVariables(self, path: str) -> str:
+  def __replaceVariables(self, path: str, groups: tuple) -> str:
     if "{day}" in path:
       path = path.replace("{day}", str(datetime.now().day))
     if "{month}" in path:
       path = path.replace("{month}", str(datetime.now().month))
     if "{year}" in path:
       path = path.replace("{year}", str(datetime.now().year))
+
+    found_groups = re.search(r"({group_\d+})", path).groups()
+    print(found_groups)
+    for group in found_groups:
+      index = int(group.replace("{group_", "").replace("}", ""))
+      value = groups[index]
+      path = path.replace(group, value)
+      print(index, value, path)
+
     return path

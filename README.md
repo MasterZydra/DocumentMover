@@ -44,6 +44,8 @@ Operation=delete # Optional - Default value is 'move'. Other options: 'copy', 'd
 
 ## Subfolder variables
 
+### Datetime
+
 Current day of month (1-31) with placeholder `{day}`: e.g. `24`  
 Current month (1-12) with placeholder `{month}`: e.g. `12`  
 Current year (1-9999) with placeholder `{year}`: e.g. `2024`
@@ -56,3 +58,19 @@ Current year (1-9999) with placeholder `{year}`: e.g. `2024`
 Subfolder={year}/{month}/{day}
 # ...
 ```
+
+### Regex match groups
+If the selector of a rule(`(pattern)`), you can use these groups in the subfolder.
+
+**Example file `.documentMover`**
+```EditorConfig
+# ...
+
+[Rule.rule_name]
+Selector=kontoauszug.*_123456_dat(\d{4})
+Subfolder=year/{group_0}
+# ...
+```
+
+The selector in the example contains one match group: `(\d{4})`  
+The string represented by this match group will replace `{group_0}` in the subfolder.
