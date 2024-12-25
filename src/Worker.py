@@ -85,11 +85,9 @@ class Worker(object):
       path = path.replace("{year}", str(datetime.now().year))
 
     found_groups = re.search(r"({group_\d+})", path).groups()
-    print(found_groups)
     for group in found_groups:
       index = int(group.replace("{group_", "").replace("}", ""))
       value = groups[index]
       path = path.replace(group, value)
-      print(index, value, path)
 
     return path
