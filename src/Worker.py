@@ -84,7 +84,11 @@ class Worker(object):
     if "{year}" in path:
       path = path.replace("{year}", str(datetime.now().year))
 
-    found_groups = re.search(r"({group_\d+})", path).groups()
+    found_groups = re.search(r"({group_\d+})", path)
+    if found_groups is None:
+      return path
+    found_groups = found_groups.groups()
+
     for group in found_groups:
       index = int(group.replace("{group_", "").replace("}", ""))
       value = groups[index]
