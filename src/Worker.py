@@ -39,7 +39,7 @@ class Worker(object):
     if not re.match(rule.selector, file[0], re.IGNORECASE):
       return
 
-    groups = re.search(rule.selector, file[0]).groups()
+    groups = re.search(rule.selector, file[0], re.IGNORECASE).groups()
 
     destination: Destination = self.__config.getDestination(rule.destination)
 
